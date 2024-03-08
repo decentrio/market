@@ -379,7 +379,7 @@ func New(
 
 		app.BankKeeper,
 	)
-	marketModule := market.NewAppModule(appCodec, app.MarketKeeper, app.AccountKeeper, app.BankKeeper)
+	marketModule := market.NewAppModule(appCodec, *app.MarketKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
