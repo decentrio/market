@@ -227,7 +227,7 @@ type App struct {
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 
-	MarketKeeper marketkeeper.Keeper
+	MarketKeeper *marketkeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -342,7 +342,7 @@ func New(
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
-		AddRoute(marketclienttypes.RouterKey, market.NewDenomMetadataProposalHandler(app.MarketKeeper))
+		AddRoute(marketclienttypes.RouterKey, market.NewDenomMetadataProposalHandler(*app.MarketKeeper))
 
 	// Create Transfer Keepers
 	app.TransferKeeper = ibctransferkeeper.NewKeeper(
@@ -371,7 +371,7 @@ func New(
 		&stakingKeeper, govRouter,
 	)
 
-	app.MarketKeeper = *marketkeeper.NewKeeper(
+	app.MarketKeeper = marketkeeper.NewKeeper(
 		appCodec,
 		keys[markettypes.StoreKey],
 		keys[markettypes.MemStoreKey],
@@ -379,7 +379,7 @@ func New(
 
 		app.BankKeeper,
 	)
-	marketModule := market.NewAppModule(appCodec, app.MarketKeeper, app.AccountKeeper, app.BankKeeper)
+	marketModule := market.NewAppModule(appCodec, *app.MarketKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
